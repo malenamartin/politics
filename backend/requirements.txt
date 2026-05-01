@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+httpx
+python-dotenv
+supabase
+openai
+anthropic
+newsapi-python
+snscrape
