@@ -33,7 +33,9 @@ def run() -> int:
         )
 
     upsert_rows("ai_observations", rows)
-    print(f"ai_observation_job: stored={len(rows)}")
+    print(
+        f"ai_observation_job: stored={len(rows)} target_min={settings.min_observations_per_run}"
+    )
     return len(rows)
 
 

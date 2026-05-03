@@ -4,8 +4,7 @@ import datetime as dt
 from collections import defaultdict
 from typing import Dict, Tuple
 
-from app.db.supabase_client import get_supabase
-from jobs._common import upsert_rows
+from jobs._common import read_rows, upsert_rows
 
 
 def run(stat_date: dt.date | None = None) -> int:
@@ -13,23 +12,17 @@ def run(stat_date: dt.date | None = None) -> int:
     start = dt.datetime.combine(target_date, dt.time.min, tzinfo=dt.timezone.utc).isoformat()
     end = dt.datetime.combine(target_date, dt.time.max, tzinfo=dt.timezone.utc).isoformat()
 
-    supabase = get_supabase()
-    ai_rows = (
-        supabase.table("ai_observations")
-        .select("engine,entity_name,sentiment_label,sentiment_score,narrative_tag")
-        .gte("observed_at", start)
-        .lte("observed_at", end)
-        .execute()
-        .data
-    )
-    mention_rows = (
-        supabase.table("mentions")
-        .select("source,entity_name,sentiment_label,sentiment_score")
-        .gte("published_at", start)
-        .lte("published_at", end)
-        .execute()
-        .data
-    )
+    ai_rows = []
+    for row in read_rows("ai_observations"):
+        observed = row.get("observed_at")
+        if observed and start <= observed <= end:
+            ai_rows.append(row)
+
+    mention_rows = []
+    for row in read_rows("mentions"):
+        published = row.get("published_at")
+        if published and start <= published <= end:
+            mention_rows.append(row)
 
     grouped: Dict[Tuple[str, str, str], dict] = defaultdict(
         lambda: {

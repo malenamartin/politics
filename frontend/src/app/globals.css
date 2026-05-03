@@ -1,26 +1,266 @@
+@import url("https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700,900&display=swap");
+@import url("https://cdn.jsdelivr.net/npm/heroicons@2.0.18/24/outline/style.css");
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  --fardo-orange-50: #fff3eb;
+  --fardo-orange-100: #ffd6b0;
+  --fardo-orange-200: #ffb878;
+  --fardo-orange-300: #ff9040;
+  --fardo-orange-400: #ff6a00;
+  --fardo-orange-500: #e05a00;
+  --fardo-orange-600: #b84a00;
+  --fardo-orange-700: #8c3600;
+  --fardo-orange-800: #602400;
+  --fardo-orange-900: #3d1500;
+  --fardo-orange-950: #200a00;
+
+  --fardo-gray-50: #faf9f8;
+  --fardo-gray-100: #f2f0ee;
+  --fardo-gray-200: #e6e3e0;
+  --fardo-gray-300: #d5d1cd;
+  --fardo-gray-400: #c2bdb8;
+  --fardo-gray-500: #a9a4a0;
+  --fardo-gray-600: #898480;
+  --fardo-gray-700: #67635f;
+  --fardo-gray-800: #474441;
+  --fardo-gray-900: #2c2a28;
+  --fardo-gray-950: #191817;
+
+  --fardo-blue-50: #ebf4ff;
+  --fardo-blue-100: #c0dafb;
+  --fardo-blue-200: #85bbf8;
+  --fardo-blue-300: #3d96f5;
+  --fardo-blue-400: #0577fd;
+  --fardo-blue-500: #0462d4;
+  --fardo-blue-600: #034eab;
+  --fardo-blue-700: #033f8c;
+  --fardo-blue-800: #022f69;
+  --fardo-blue-900: #021f46;
+  --fardo-blue-950: #01142e;
+
+  --fardo-green-50: #eaf6ef;
+  --fardo-green-100: #c8e6d9;
+  --fardo-green-200: #a3d5c3;
+  --fardo-green-300: #7dc4ad;
+  --fardo-green-400: #57b398;
+  --fardo-green-500: #2e7d4f;
+  --fardo-green-600: #276a43;
+
+  --fardo-red-50: #fdebec;
+  --fardo-red-200: #f7bdc0;
+  --fardo-red-500: #d64545;
+  --fardo-red-600: #b93636;
+
+  --fardo-amber-50: #fff6e4;
+  --fardo-amber-200: #ffd282;
+  --fardo-amber-500: #d8891f;
+  --fardo-amber-600: #bf7617;
+
+  --fardo-color-bg-page: var(--fardo-gray-50);
+  --fardo-color-bg-base: var(--color-white);
+  --fardo-color-bg-subtle: var(--fardo-gray-100);
+  --fardo-color-bg-elevated: var(--color-white);
+  --fardo-color-bg-brand: var(--fardo-orange-400);
+
+  --fardo-color-text-primary: var(--fardo-gray-900);
+  --fardo-color-text-secondary: var(--fardo-gray-700);
+  --fardo-color-text-muted: var(--fardo-gray-600);
+  --fardo-color-text-brand: var(--fardo-orange-500);
+  --fardo-color-text-on-brand: var(--color-white);
+  --fardo-color-text-success: var(--fardo-green-600);
+  --fardo-color-text-warning: var(--fardo-amber-600);
+  --fardo-color-text-danger: var(--fardo-red-600);
+
+  --fardo-color-border-default: var(--fardo-gray-200);
+  --fardo-color-border-subtle: var(--fardo-gray-100);
+  --fardo-color-border-strong: var(--fardo-gray-500);
+  --fardo-color-border-brand: var(--fardo-orange-400);
+
+  --fardo-shadow-none: none;
+  --fardo-shadow-xs: 0px 1px 2px rgba(0, 0, 0, 0.06);
+  --fardo-shadow-sm: 0px 1px 4px rgba(0, 0, 0, 0.08), 0px 0px 0px 1px rgba(0, 0, 0, 0.05);
+  --fardo-shadow-md: 0px 4px 12px rgba(0, 0, 0, 0.1), 0px 0px 0px 1px rgba(0, 0, 0, 0.06);
+
+  --fardo-font-body: "Satoshi", sans-serif;
+  --fardo-font-heading: "Satoshi", sans-serif;
+  --fardo-weight-regular: 400;
+  --fardo-weight-medium: 500;
+  --fardo-weight-semibold: 600;
+  --fardo-weight-bold: 700;
+
+  --fardo-text-1: 12px;
+  --fardo-text-2: 14px;
+  --fardo-text-3: 16px;
+  --fardo-text-4: 18px;
+  --fardo-text-6: 24px;
+
+  --fardo-space-sm: 8px;
+  --fardo-space-md: 12px;
+  --fardo-space-lg: 16px;
+  --fardo-space-xl: 20px;
+  --fardo-space-2xl: 24px;
+  --fardo-space-3xl: 32px;
+
+  --fardo-radius-sm: 4px;
+  --fardo-radius-md: 8px;
+  --fardo-radius-lg: 12px;
+  --fardo-radius-xl: 16px;
+  --fardo-radius-pill: 9999px;
+
+  --fardo-card-bg: var(--color-white);
+  --fardo-card-border: var(--fardo-gray-200);
+  --fardo-card-radius: var(--fardo-radius-lg);
+  --fardo-card-shadow: var(--fardo-shadow-sm);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --color-background: var(--fardo-color-bg-page);
+  --color-foreground: var(--fardo-color-text-primary);
+  --font-sans: var(--fardo-font-body);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--fardo-color-bg-page);
+  color: var(--fardo-color-text-primary);
+  font-family: var(--fardo-font-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.fardo-page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #fff6ef 0%, var(--fardo-color-bg-page) 200px);
+}
+
+.fardo-card {
+  background: var(--fardo-card-bg);
+  border: 1px solid var(--fardo-card-border);
+  border-radius: var(--fardo-card-radius);
+  box-shadow: var(--fardo-card-shadow);
+}
+
+.fardo-title {
+  font-family: var(--fardo-font-heading);
+  font-size: 32px;
+  line-height: 1.2;
+  font-weight: var(--fardo-weight-semibold);
+  letter-spacing: -0.01em;
+}
+
+.fardo-subtitle {
+  font-size: var(--fardo-text-2);
+  color: var(--fardo-color-text-muted);
+}
+
+.fardo-kpi-label {
+  font-size: var(--fardo-text-1);
+  font-weight: var(--fardo-weight-medium);
+  color: var(--fardo-color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.fardo-kpi-value {
+  font-size: var(--fardo-text-6);
+  font-weight: var(--fardo-weight-semibold);
+  color: var(--fardo-color-text-primary);
+}
+
+.fardo-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: var(--fardo-radius-pill);
+  font-size: var(--fardo-text-2);
+  font-weight: var(--fardo-weight-medium);
+  line-height: 1.4;
+  border: 1px solid transparent;
+}
+
+.fardo-tag-info {
+  background-color: var(--fardo-blue-50);
+  color: var(--fardo-blue-700);
+  border-color: var(--fardo-blue-200);
+}
+
+.fardo-tag-success {
+  background-color: var(--fardo-green-50);
+  color: var(--fardo-green-600);
+  border-color: var(--fardo-green-200);
+}
+
+.fardo-tag-warning {
+  background-color: var(--fardo-amber-50);
+  color: var(--fardo-amber-600);
+  border-color: var(--fardo-amber-200);
+}
+
+.fardo-tag-error {
+  background-color: var(--fardo-red-50);
+  color: var(--fardo-red-600);
+  border-color: var(--fardo-red-200);
+}
+
+.fardo-input {
+  width: 100%;
+  height: 40px;
+  border-radius: var(--fardo-radius-md);
+  border: 1px solid var(--fardo-color-border-default);
+  background: var(--fardo-color-bg-base);
+  color: var(--fardo-color-text-primary);
+  font-size: var(--fardo-text-3);
+  padding: 10px 12px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.fardo-input:hover {
+  border-color: var(--fardo-color-border-strong);
+}
+
+.fardo-input:focus {
+  outline: none;
+  border-color: var(--fardo-color-border-brand);
+  box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.2);
+}
+
+.fardo-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2367635F'%3e%3cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3e%3c/path%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 20px;
+  padding-right: 40px;
+}
+
+.fardo-button {
+  height: 40px;
+  border-radius: var(--fardo-radius-md);
+  border: 1px solid transparent;
+  padding: 0 16px;
+  font-size: var(--fardo-text-3);
+  font-weight: var(--fardo-weight-medium);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.fardo-button-primary {
+  background: var(--fardo-orange-400);
+  color: var(--color-white);
+  box-shadow: var(--fardo-shadow-xs);
+}
+
+.fardo-button-primary:hover {
+  background: var(--fardo-orange-500);
+  box-shadow: var(--fardo-shadow-sm);
 }

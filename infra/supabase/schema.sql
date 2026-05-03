@@ -68,3 +68,49 @@ drop trigger if exists trg_daily_stats_updated_at on public.daily_stats;
 create trigger trg_daily_stats_updated_at
 before update on public.daily_stats
 for each row execute function public.set_updated_at();
+
+create table if not exists public.query_runs (
+  id uuid primary key default gen_random_uuid(),
+  query_text text not null,
+  aliases jsonb not null default '[]'::jsonb,
+  status text not null check (status in ('queued', 'running', 'completed', 'failed')),
+  horizon_days int not null default 30 check (horizon_days in (7, 14, 30)),
+  coverage jsonb not null default '{}'::jsonb,
+  quality jsonb not null default '{}'::jsonb,
+  error text,
+  created_at timestamptz not null default now(),
+  started_at timestamptz,
+  completed_at timestamptz
+);
+
+create index if not exists idx_query_runs_created_at
+  on public.query_runs (created_at desc);
+
+create table if not exists public.query_mentions (
+  id text primary key,
+  query_run_id uuid not null references public.query_runs(id) on delete cascade,
+  query_text text not null,
+  source text not null check (source in ('ai', 'news', 'x', 'reddit', 'youtube', 'web')),
+  content text not null,
+  sentiment_label text not null default 'neutral' check (sentiment_label in ('positive', 'neutral', 'negative')),
+  sentiment_score numeric(5,4) not null default 0,
+  narrative_tag text not null default 'unknown',
+  published_at timestamptz not null,
+  url text,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists idx_query_mentions_run_published
+  on public.query_mentions (query_run_id, published_at desc);
+
+create table if not exists public.query_results (
+  id uuid primary key references public.query_runs(id) on delete cascade,
+  query_run_id uuid not null unique references public.query_runs(id) on delete cascade,
+  query_text text not null,
+  status text not null default 'completed',
+  coverage jsonb not null default '{}'::jsonb,
+  quality jsonb not null default '{}'::jsonb,
+  summary jsonb not null default '{}'::jsonb,
+  recommendations jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now()
+);

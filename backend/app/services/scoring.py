@@ -7,6 +7,7 @@ from anthropic import Anthropic
 from openai import OpenAI
 
 from app.config import get_settings
+from app.services.narrative_taxonomy import normalize_narrative_tag
 
 
 SYSTEM_PROMPT = """
@@ -27,9 +28,16 @@ Rules:
 class ScoringService:
     def __init__(self) -> None:
         settings = get_settings()
-        self._openai = OpenAI(api_key=settings.openai_api_key) if settings.openai_api_key else None
+        timeout = settings.source_timeout_seconds
+        self._openai = (
+            OpenAI(api_key=settings.openai_api_key, timeout=timeout)
+            if settings.openai_api_key
+            else None
+        )
         self._anthropic = (
-            Anthropic(api_key=settings.anthropic_api_key) if settings.anthropic_api_key else None
+            Anthropic(api_key=settings.anthropic_api_key, timeout=timeout)
+            if settings.anthropic_api_key
+            else None
         )
 
     def score_text(self, *, entity_name: str, text: str) -> Dict[str, object]:
@@ -46,36 +54,49 @@ class ScoringService:
                     ],
                 )
                 payload = completion.choices[0].message.content or "{}"
-                return self._normalize(json.loads(payload))
+                return self._normalize(json.loads(payload), text=text)
             except Exception:
                 pass
 
         if self._anthropic:
-            msg = self._anthropic.messages.create(
-                model="claude-3-5-haiku-latest",
-                max_tokens=256,
-                temperature=0,
-                system=SYSTEM_PROMPT,
-                messages=[{"role": "user", "content": user_prompt}],
-            )
-            text_output = "".join(
-                block.text for block in msg.content if getattr(block, "type", "") == "text"
-            )
-            return self._normalize(json.loads(text_output))
+            try:
+                msg = self._anthropic.messages.create(
+                    model="claude-3-5-haiku-latest",
+                    max_tokens=256,
+                    temperature=0,
+                    system=SYSTEM_PROMPT,
+                    messages=[{"role": "user", "content": user_prompt}],
+                )
+                text_output = "".join(
+                    block.text for block in msg.content if getattr(block, "type", "") == "text"
+                )
+                return self._normalize(json.loads(text_output), text=text)
+            except Exception:
+                pass
 
-        raise RuntimeError("No scoring provider available (OPENAI_API_KEY or ANTHROPIC_API_KEY).")
+        return {
+            "is_mentioned": False,
+            "sentiment_label": "neutral",
+            "sentiment_score": 0.0,
+            "narrative_tag": "other_relevant",
+        }
 
     @staticmethod
-    def _normalize(payload: Dict[str, object]) -> Dict[str, object]:
+    def _normalize(payload: Dict[str, object], *, text: str = "") -> Dict[str, object]:
         score = float(payload.get("sentiment_score", 0) or 0)
         score = max(-1.0, min(1.0, score))
         label = str(payload.get("sentiment_label", "neutral")).lower()
         if label not in {"positive", "neutral", "negative"}:
             label = "neutral"
 
+        normalized_tag = normalize_narrative_tag(
+            str(payload.get("narrative_tag", "")),
+            text=text,
+        )
+
         return {
             "is_mentioned": bool(payload.get("is_mentioned", False)),
             "sentiment_label": label,
             "sentiment_score": score,
-            "narrative_tag": str(payload.get("narrative_tag", "unknown")).strip().lower(),
+            "narrative_tag": normalized_tag,
         }

@@ -4,8 +4,6 @@ import datetime as dt
 from dataclasses import dataclass
 from typing import Iterable, List
 
-import snscrape.modules.twitter as sntwitter
-
 
 @dataclass
 class XMention:
@@ -18,6 +16,11 @@ class XMention:
 
 class XIngestionService:
     def collect(self, entities: Iterable[str], *, per_entity_limit: int = 30) -> List[XMention]:
+        try:
+            import snscrape.modules.twitter as sntwitter  # type: ignore
+        except Exception:
+            return []
+
         mentions: List[XMention] = []
         for entity in entities:
             query = f'"{entity}" lang:es'
